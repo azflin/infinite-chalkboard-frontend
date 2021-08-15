@@ -3,12 +3,22 @@ import './App.css';
 import detectEthereumProvider from '@metamask/detect-provider';
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
+import { abi } from "./abis/InfiniteChalkboard.json";
+
+const INFINITE_CHALKBOARD_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 function App() {
 
+  // Provider, signer, and address
   const [provider, setProvider] = useState();
   const [signer, setSigner] = useState();
   const [address, setAddress] = useState();
+
+  // Contract variables
+  const [contract, setContract] = useState();
+  const [message, setMessage] = useState();
+  const [author, setAuthor] = useState();
+  const [cost, setCost] = useState();
 
   const connectMetamask = async () => {
     if (provider) {
@@ -22,10 +32,7 @@ function App() {
     }
   }
 
-  const logStuff = () => {
-    console.log(signer);
-  }
-
+  // On initial load, set the provider. If already connected, set address and signer as well.
   useEffect(() => {
     async function getProvider() {
       let p = new ethers.providers.Web3Provider(window.ethereum);
@@ -39,12 +46,30 @@ function App() {
     getProvider();
   }, []);
 
+  // Once we have a signer, instantiate the contract with signer. Set contract state variables.
+  useEffect(() => {
+    async function instantiateContract() {
+      let c = new ethers.Contract(INFINITE_CHALKBOARD_ADDRESS, abi, signer)
+      setContract(c);
+      setMessage(await c.message());
+      setCost(ethers.utils.formatEther(await c.cost()));
+      setAuthor(await c.author());
+    }
+    if (signer) {
+      instantiateContract();
+    }
+  }, [signer]);
+
   return (
     <Container className="mt-2">
       <div align="right">
         {address ? address : <Button onClick={connectMetamask}>Connect</Button>}
       </div>
-      <Button onClick={logStuff}>Log Stuff</Button>
+      <div>
+        <div>Message: {message}</div>
+        <div>Author: {author}</div>
+        <div>Cost: {cost}</div>
+      </div>
     </Container>
   );
 }
