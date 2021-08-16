@@ -10,8 +10,6 @@ const INFINITE_CHALKBOARD_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
 
 function App() {
 
-  console.log("rendering");
-
   // Provider, signer, and address
   const [provider, setProvider] = useState();
   const [signer, setSigner] = useState();
@@ -41,7 +39,15 @@ function App() {
 
   // Function to write message to blockchain
   const writeMessage = async (message) => {
-    await contract.write(message, {value: ethers.utils.parseEther(cost)});
+    let txResponse = await contract.write(message, {value: ethers.utils.parseEther(cost)});
+    let txReceipt = await txResponse.wait();
+    if (txReceipt.status === 1) {
+      setMessage(txReceipt.events[0].args[0]);
+      setAuthor(txReceipt.events[0].args[1]);
+      setCost(ethers.utils.formatEther(txReceipt.events[0].args[2]));
+    } else {
+      console.log("Transaction reverted.");
+    }
   }
 
   // On initial load, set the provider. If already connected, set address and signer as well.
