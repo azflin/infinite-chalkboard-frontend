@@ -4,10 +4,13 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { abi } from "./abis/InfiniteChalkboard.json";
+import MessageForm from './components/MessageForm';
 
 const INFINITE_CHALKBOARD_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 function App() {
+
+  console.log("rendering");
 
   // Provider, signer, and address
   const [provider, setProvider] = useState();
@@ -20,6 +23,10 @@ function App() {
   const [author, setAuthor] = useState();
   const [cost, setCost] = useState();
 
+  // Form input, messageToWrite
+  const [messageToWrite, setMessageToWrite] = useState("");
+
+  // Function to request metamask connection
   const connectMetamask = async () => {
     if (provider) {
       try {
@@ -30,6 +37,11 @@ function App() {
         console.log("User rejected connection request.")
       }
     }
+  }
+
+  // Function to handle submit
+  const writeMessage = (message) => {
+    console.log(message);
   }
 
   // On initial load, set the provider. If already connected, set address and signer as well.
@@ -69,6 +81,7 @@ function App() {
         <div>Message: {message}</div>
         <div>Author: {author}</div>
         <div>Cost: {cost}</div>
+        <MessageForm writeMessage={writeMessage}></MessageForm>
       </div>
     </Container>
   );
