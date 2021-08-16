@@ -21,8 +21,7 @@ function App() {
   const [author, setAuthor] = useState();
   const [cost, setCost] = useState();
 
-  // Form input, messageToWrite
-  const [messageToWrite, setMessageToWrite] = useState("");
+  const [processingTransaction, setProcessingTransaction] = useState(false);
 
   // Function to request metamask connection
   const connectMetamask = async () => {
@@ -40,6 +39,7 @@ function App() {
   // Function to write message to blockchain
   const writeMessage = async (message) => {
     let txResponse = await contract.write(message, {value: ethers.utils.parseEther(cost)});
+    setProcessingTransaction(true);
     let txReceipt = await txResponse.wait();
     if (txReceipt.status === 1) {
       setMessage(txReceipt.events[0].args[0]);
@@ -48,6 +48,7 @@ function App() {
     } else {
       console.log("Transaction reverted.");
     }
+    setProcessingTransaction(false);
   }
 
   // On initial load, set the provider. If already connected, set address and signer as well.
@@ -80,6 +81,7 @@ function App() {
 
   return (
     <Container className="mt-2">
+      { processingTransaction && <h3>Processing transaction ...</h3>}
       <div align="right">
         {address ? address : <Button onClick={connectMetamask}>Connect</Button>}
       </div>
