@@ -2,10 +2,17 @@ import './App.css';
 import detectEthereumProvider from '@metamask/detect-provider';
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
+import styled from 'styled-components'
+
 import { abi } from "./abis/InfiniteChalkboard.json";
 import MessageForm from './components/MessageForm';
 
 const INFINITE_CHALKBOARD_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+
+const Container = styled.div`
+  max-width: 900px;
+  margin: auto;
+`
 
 function App() {
 
@@ -79,7 +86,7 @@ function App() {
   }, [signer]);
 
   return (
-    <div>
+    <Container>
       { processingTransaction && <h3>Processing transaction ...</h3>}
       <div align="right">
         {address ? address : <button onClick={connectMetamask}>Connect</button>}
@@ -90,7 +97,7 @@ function App() {
         <div>Cost: {cost}</div>
         <MessageForm writeMessage={writeMessage}></MessageForm>
       </div>
-    </div>
+    </Container>
   );
 }
 
