@@ -39,9 +39,9 @@ function App() {
     }
   }
 
-  // Function to handle submit
-  const writeMessage = (message) => {
-    console.log(message);
+  // Function to write message to blockchain
+  const writeMessage = async (message) => {
+    await contract.write(message, {value: ethers.utils.parseEther(cost)});
   }
 
   // On initial load, set the provider. If already connected, set address and signer as well.
