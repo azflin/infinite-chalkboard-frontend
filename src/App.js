@@ -1,4 +1,3 @@
-import { Container, Col, Row, Button } from 'react-bootstrap';
 import './App.css';
 import detectEthereumProvider from '@metamask/detect-provider';
 import React, { useEffect, useState } from 'react';
@@ -80,10 +79,10 @@ function App() {
   }, [signer]);
 
   return (
-    <Container className="mt-2">
+    <div>
       { processingTransaction && <h3>Processing transaction ...</h3>}
       <div align="right">
-        {address ? address : <Button onClick={connectMetamask}>Connect</Button>}
+        {address ? address : <button onClick={connectMetamask}>Connect</button>}
       </div>
       <div>
         <div>Message: {message}</div>
@@ -91,7 +90,7 @@ function App() {
         <div>Cost: {cost}</div>
         <MessageForm writeMessage={writeMessage}></MessageForm>
       </div>
-    </Container>
+    </div>
   );
 }
 
