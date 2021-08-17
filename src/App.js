@@ -6,6 +6,8 @@ import styled from 'styled-components'
 
 import { abi } from "./abis/InfiniteChalkboard.json";
 import MessageForm from './components/MessageForm';
+import chalkboard from './chalkboard.png'
+import { ABSOLUTE } from 'relateurl';
 
 const INFINITE_CHALKBOARD_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
@@ -16,7 +18,9 @@ const Container = styled.div`
 const Rules = styled.div`
   border: 2px solid white;
   border-radius: 20px;
-  background-color: rgba(138, 192, 138, 0.5);
+  // background-color: rgba(138, 192, 138, 0.5);
+  background-color: rgba(99, 95, 84, 0.7);
+  margin-bottom: 15px;
 `
 
 function App() {
@@ -98,19 +102,34 @@ function App() {
       </div>
       <Rules>
         <ul>
-          <span><h3 style={{margin: "0"}}>Classroom Rules</h3></span>
+          <span><h1 style={{margin: "0"}}>The Infinite Chalkboard</h1></span>
           <li>There can only be one message on the chalkboard.</li>
           <li>It costs <b>0.1 * 1.1 ^ (# of prior messages) ETH</b> to write a message, overwriting the existing one.</li>
           <li>After a new message, the prior author receives 109% of what they originally paid. The remaining 1% remains in this contract.</li>
         </ul>
       </Rules>
-      <h1 style={{textAlign: "center"}}>THE INFINITE CHALKBOARD</h1>
-      <div>
-        <div>Message: {message}</div>
-        <div>Author: {author}</div>
-        <div>Cost: {cost}</div>
-        <MessageForm writeMessage={writeMessage}></MessageForm>
+      <div style={{display: "flex", justifyContent: "center"}}>
+        <div style={{position: "relative"}}>
+          <img src={chalkboard} width="800px" height="auto"></img>
+          <div style={{position: "absolute", height: "50%", width: "75%", overflow: "auto", margin: "auto", top: 0, left: 0, bottom: 0, right: 0, fontSize: "26px"}}>
+            {message}
+          </div>
+          <div style={{position: "absolute", top: "420px", right: "60px"}}>
+             - {author}
+          </div>
+        </div>
       </div>
+      <Rules style={{padding: "15px", margin: "15px 0", display: "flex"}}>
+        <div>
+          <h3>Write message (max 100 bytes):</h3>
+          <div>
+            <p>Cost: {cost} ETH</p>
+          </div>
+        </div>
+        <div style={{display: "flex", alignItems: "center"}}>
+          <MessageForm writeMessage={writeMessage}></MessageForm>
+        </div>
+      </Rules>
     </Container>
   );
 }
