@@ -14,6 +14,9 @@ const Submit = styled.input`
   text-decoration: none;
   font-size: 15px;
   font-family: inherit;
+  &:hover {
+    background: rgba(0, 0, 0, 0.5);
+  }
 `
 
 export default function MessageForm({ writeMessage }) {
@@ -31,7 +34,7 @@ export default function MessageForm({ writeMessage }) {
           type='text'
           value={message}
           onChange={e => setMessage(e.target.value)}
-          style={{width: "300px"}}
+          style={{width: "350px", height: "80px"}}
         />
         <Submit 
           type='submit'
