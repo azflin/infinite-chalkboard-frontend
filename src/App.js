@@ -66,6 +66,7 @@ function App() {
 
   const [processingTransaction, setProcessingTransaction] = useState(false);
   const [metamaskInstalled, setMetamaskInstalled] = useState(false);
+  const [wrongChain, setWrongChain] = useState(false);
 
   // Function to request metamask connection
   const connectMetamask = async () => {
@@ -101,6 +102,11 @@ function App() {
       if (await detectEthereumProvider()) {
         setMetamaskInstalled(true);
         let p = new ethers.providers.Web3Provider(window.ethereum);
+        let chainId = (await p.getNetwork()).chainId;
+        if (chainId !== 31337) {
+          setWrongChain(true);
+          return;
+        }
         let accounts = await p.listAccounts();
         if (accounts.length) {
           setAddress(accounts[0]);
@@ -126,6 +132,14 @@ function App() {
     }
   }, [signer]);
 
+  if (wrongChain) {
+    return (
+      <div>
+        <h1 style={{textAlign: "center"}}>The Infinite Chalkboard</h1>
+        <h3 style={{textAlign: "center"}}>Wrong Chain! Please switch to localhost.</h3>
+      </div>
+    )
+  }
   if (metamaskInstalled) {
     return (
       <Container>
