@@ -7,7 +7,6 @@ import styled from 'styled-components'
 import { abi } from "./abis/InfiniteChalkboard.json";
 import MessageForm from './components/MessageForm';
 import chalkboard from './chalkboard.png'
-import { ABSOLUTE } from 'relateurl';
 
 const INFINITE_CHALKBOARD_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
@@ -15,12 +14,41 @@ const Container = styled.div`
   max-width: 900px;
   margin: auto;
 `
-const Rules = styled.div`
+const BorderedDiv = styled.div`
   border: 2px solid white;
   border-radius: 20px;
-  // background-color: rgba(138, 192, 138, 0.5);
   background-color: rgba(99, 95, 84, 0.7);
   margin-bottom: 15px;
+`
+const ProcessingTransaction = styled.div`
+  position: fixed;
+  bottom: 50px;
+  right: 20px;
+  border: 2px solid white;
+  border-radius: 10px;
+  font-size: 24px;
+  padding: 10px;
+  background-color: rgba(38, 122, 59, 0.8)
+`
+const Dots = styled.span`
+  &::after {
+    display: inline-block;
+    animation: ellipsis 1.25s infinite;
+    content: ".";
+    width: 1em;
+    text-align: left;
+  }
+  @keyframes ellipsis {
+    0% {
+      content: ".";
+    }
+    33% {
+      content: "..";
+    }
+    66% {
+      content: "...";
+    }
+  }
 `
 
 function App() {
@@ -96,18 +124,19 @@ function App() {
 
   return (
     <Container>
-      { processingTransaction && <h3>Processing transaction ...</h3>}
+      {/* The header and rules */}
       <div align="right">
         {address ? address : <button onClick={connectMetamask}>Connect</button>}
       </div>
-      <Rules>
+      <BorderedDiv>
         <ul>
           <span><h1 style={{margin: "0"}}>The Infinite Chalkboard</h1></span>
           <li>There can only be one message on the chalkboard.</li>
           <li>It costs <b>0.1 * 1.1 ^ (# of prior messages) ETH</b> to write a message, overwriting the existing one.</li>
           <li>After a new message, the prior author receives 109% of what they originally paid. The remaining 1% remains in this contract.</li>
         </ul>
-      </Rules>
+      </BorderedDiv>
+      {/* The chalkboard */}
       <div style={{display: "flex", justifyContent: "center"}}>
         <div style={{position: "relative"}}>
           <img src={chalkboard} width="800px" height="auto"></img>
@@ -119,7 +148,8 @@ function App() {
           </div>
         </div>
       </div>
-      <Rules style={{padding: "15px", margin: "15px 0", display: "flex"}}>
+      {/* Write message form */}
+      <BorderedDiv style={{padding: "15px", margin: "15px 0", display: "flex"}}>
         <div>
           <h3>Write message (max 100 bytes):</h3>
           <div>
@@ -129,7 +159,13 @@ function App() {
         <div style={{display: "flex", alignItems: "center"}}>
           <MessageForm writeMessage={writeMessage}></MessageForm>
         </div>
-      </Rules>
+      </BorderedDiv>
+      {/* Processing transaction box */}
+      {processingTransaction &&
+        <ProcessingTransaction>
+          Processing Transaction<Dots></Dots>
+        </ProcessingTransaction>
+      }
     </Container>
   );
 }
