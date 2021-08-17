@@ -101,7 +101,15 @@ function App() {
     async function getProvider() {
       if (await detectEthereumProvider()) {
         setMetamaskInstalled(true);
-        let p = new ethers.providers.Web3Provider(window.ethereum);
+        let p = new ethers.providers.Web3Provider(window.ethereum, "any");
+        p.on("network", (newNetwork, oldNetwork) => {
+          // When a Provider makes its initial connection, it emits a "network"
+          // event with a null oldNetwork along with the newNetwork. So, if the
+          // oldNetwork exists, it represents a changing network
+          if (oldNetwork) {
+              window.location.reload();
+          }
+        });
         let chainId = (await p.getNetwork()).chainId;
         if (chainId !== 31337) {
           setWrongChain(true);
