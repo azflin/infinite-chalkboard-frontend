@@ -13,6 +13,11 @@ const Container = styled.div`
   max-width: 900px;
   margin: auto;
 `
+const Rules = styled.div`
+  border: 2px solid white;
+  border-radius: 20px;
+  background-color: rgba(138, 192, 138, 0.5);
+`
 
 function App() {
 
@@ -91,6 +96,15 @@ function App() {
       <div align="right">
         {address ? address : <button onClick={connectMetamask}>Connect</button>}
       </div>
+      <Rules>
+        <ul>
+          <span><h3 style={{margin: "0"}}>Classroom Rules</h3></span>
+          <li>There can only be one message on the chalkboard.</li>
+          <li>It costs <b>0.1 * 1.1 ^ (# of prior messages) ETH</b> to write a message, overwriting the existing one.</li>
+          <li>After a new message, the prior author receives 109% of what they originally paid. The remaining 1% remains in this contract.</li>
+        </ul>
+      </Rules>
+      <h1 style={{textAlign: "center"}}>THE INFINITE CHALKBOARD</h1>
       <div>
         <div>Message: {message}</div>
         <div>Author: {author}</div>
