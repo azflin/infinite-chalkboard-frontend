@@ -65,6 +65,7 @@ function App() {
   const [cost, setCost] = useState();
 
   const [processingTransaction, setProcessingTransaction] = useState(false);
+  const [metamaskInstalled, setMetamaskInstalled] = useState(false);
 
   // Function to request metamask connection
   const connectMetamask = async () => {
@@ -97,13 +98,16 @@ function App() {
   // On initial load, set the provider. If already connected, set address and signer as well.
   useEffect(() => {
     async function getProvider() {
-      let p = new ethers.providers.Web3Provider(window.ethereum);
-      let accounts = await p.listAccounts();
-      if (accounts.length) {
-        setAddress(accounts[0]);
-        setSigner(p.getSigner());
+      if (await detectEthereumProvider()) {
+        setMetamaskInstalled(true);
+        let p = new ethers.providers.Web3Provider(window.ethereum);
+        let accounts = await p.listAccounts();
+        if (accounts.length) {
+          setAddress(accounts[0]);
+          setSigner(p.getSigner());
+        }
+        setProvider(p);
       }
-      setProvider(p);
     }
     getProvider();
   }, []);
@@ -122,52 +126,62 @@ function App() {
     }
   }, [signer]);
 
-  return (
-    <Container>
-      {/* The header and rules */}
-      <div align="right">
-        {address ? address : <button onClick={connectMetamask}>Connect</button>}
-      </div>
-      <BorderedDiv>
-        <ul>
-          <span><h1 style={{margin: "0"}}>The Infinite Chalkboard</h1></span>
-          <li>There can only be one message on the chalkboard.</li>
-          <li>It costs <b>0.1 * 1.1 ^ (# of prior messages) ETH</b> to write a message, overwriting the existing one.</li>
-          <li>After a new message, the prior author receives 109% of what they originally paid. The remaining 1% remains in this contract.</li>
-        </ul>
-      </BorderedDiv>
-      {/* The chalkboard */}
-      <div style={{display: "flex", justifyContent: "center"}}>
-        <div style={{position: "relative"}}>
-          <img src={chalkboard} width="800px" height="auto"></img>
-          <div style={{position: "absolute", height: "50%", width: "75%", overflow: "auto", margin: "auto", top: 0, left: 0, bottom: 0, right: 0, fontSize: "26px"}}>
-            {message}
-          </div>
-          <div style={{position: "absolute", top: "420px", right: "60px"}}>
-             - {author}
+  if (metamaskInstalled) {
+    return (
+      <Container>
+        {/* The header and rules */}
+        <div align="right">
+          {address ? address : <button onClick={connectMetamask}>Connect</button>}
+        </div>
+        <BorderedDiv>
+          <ul>
+            <span><h1 style={{margin: "0"}}>The Infinite Chalkboard</h1></span>
+            <li>There can only be one message on the chalkboard.</li>
+            <li>It costs <b>0.1 * 1.1 ^ (# of prior messages) ETH</b> to write a message, overwriting the existing one.</li>
+            <li>After a new message, the prior author receives 109% of what they originally paid. The remaining 1% remains in this contract.</li>
+          </ul>
+        </BorderedDiv>
+        {/* The chalkboard */}
+        <div style={{display: "flex", justifyContent: "center"}}>
+          <div style={{position: "relative"}}>
+            <img src={chalkboard} width="800px" height="auto"></img>
+            <div style={{position: "absolute", height: "50%", width: "75%", overflow: "auto", margin: "auto", top: 0, left: 0, bottom: 0, right: 0, fontSize: "26px"}}>
+              {message}
+            </div>
+            <div style={{position: "absolute", top: "420px", right: "60px"}}>
+               - {author}
+            </div>
           </div>
         </div>
-      </div>
-      {/* Write message form */}
-      <BorderedDiv style={{padding: "15px", margin: "15px 0", display: "flex"}}>
-        <div>
-          <h3>Write message (max 200 bytes):</h3>
+        {/* Write message form */}
+        <BorderedDiv style={{padding: "15px", margin: "15px 0", display: "flex"}}>
           <div>
-            <p style={{fontSize: "20px"}}>Cost: {parseFloat(cost).toFixed(6)} ETH</p>
+            <h3>Write message (max 200 bytes):</h3>
+            <div>
+              <p style={{fontSize: "20px"}}>Cost: {parseFloat(cost).toFixed(6)} ETH</p>
+            </div>
           </div>
-        </div>
-        <div style={{display: "flex", alignItems: "center"}}>
-          <MessageForm writeMessage={writeMessage}></MessageForm>
-        </div>
-      </BorderedDiv>
-      {/* Processing transaction box */}
-      {processingTransaction &&
-        <ProcessingTransaction>
-          Processing Transaction<Dots></Dots>
-        </ProcessingTransaction>
-      }
-    </Container>
-  );
+          <div style={{display: "flex", alignItems: "center"}}>
+            <MessageForm writeMessage={writeMessage}></MessageForm>
+          </div>
+        </BorderedDiv>
+        {/* Processing transaction box */}
+        {processingTransaction &&
+          <ProcessingTransaction>
+            Processing Transaction<Dots></Dots>
+          </ProcessingTransaction>
+        }
+      </Container>
+    );
+  } else {
+    return (
+      <div>
+        <h1 style={{textAlign: "center"}}>The Infinite Chalkboard</h1>
+        <h3 style={{textAlign: "center"}}>Please install Metamask.</h3>
+      </div>
+    );
+  }
+
 }
 
 export default App;
