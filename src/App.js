@@ -151,7 +151,7 @@ function App() {
       {/* Write message form */}
       <BorderedDiv style={{padding: "15px", margin: "15px 0", display: "flex"}}>
         <div>
-          <h3>Write message (max 100 bytes):</h3>
+          <h3>Write message (max 200 bytes):</h3>
           <div>
             <p style={{fontSize: "20px"}}>Cost: {parseFloat(cost).toFixed(6)} ETH</p>
           </div>

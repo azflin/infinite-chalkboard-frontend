@@ -25,7 +25,7 @@ export default function MessageForm({ writeMessage }) {
 
   const handleSubmit= (e) => {
     e.preventDefault();
-    if (encodeURI(message).split(/%..|./).length - 1 >= 100) {
+    if (encodeURI(message).split(/%..|./).length - 1 >= 200) {
       setInvalidString(true);
     } else {
       setInvalidString(false);
@@ -35,7 +35,7 @@ export default function MessageForm({ writeMessage }) {
 
   return (
     <form onSubmit={e => { handleSubmit(e) }} style={{marginLeft: "20px"}}>
-      {invalidString && <div>String must be less than 100 bytes.</div>}
+      {invalidString && <div>String must be less than 200 bytes.</div>}
       <div style={{display: "flex", alignItems: "center"}}>
         <textarea 
           name='message' 
