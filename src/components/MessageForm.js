@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components'
 
-const Submit = styled.input`
+const Submit = styled.button`
   display: inline-block;
   background: #000;
   color: #fff;
@@ -21,13 +21,21 @@ const Submit = styled.input`
 
 export default function MessageForm({ writeMessage }) {
   const [message, setMessage] = useState("");
+  const [invalidString, setInvalidString] = useState(false);
+
   const handleSubmit= (e) => {
     e.preventDefault();
-    writeMessage(message);
+    if (encodeURI(message).split(/%..|./).length - 1 >= 100) {
+      setInvalidString(true);
+    } else {
+      setInvalidString(false);
+      writeMessage(message);
+    }
   }
 
   return (
     <form onSubmit={e => { handleSubmit(e) }} style={{marginLeft: "20px"}}>
+      {invalidString && <div>String must be less than 100 bytes.</div>}
       <div style={{display: "flex", alignItems: "center"}}>
         <textarea 
           name='message' 
@@ -36,10 +44,7 @@ export default function MessageForm({ writeMessage }) {
           onChange={e => setMessage(e.target.value)}
           style={{width: "350px", height: "80px"}}
         />
-        <Submit 
-          type='submit'
-          value='Submit'
-        />
+        <Submit type='submit'>Submit</Submit>
       </div>
     </form>
   )

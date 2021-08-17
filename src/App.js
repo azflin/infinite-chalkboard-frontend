@@ -153,7 +153,7 @@ function App() {
         <div>
           <h3>Write message (max 100 bytes):</h3>
           <div>
-            <p>Cost: {cost} ETH</p>
+            <p style={{fontSize: "20px"}}>Cost: {parseFloat(cost).toFixed(6)} ETH</p>
           </div>
         </div>
         <div style={{display: "flex", alignItems: "center"}}>
