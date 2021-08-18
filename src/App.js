@@ -9,7 +9,7 @@ import MessageForm from './components/MessageForm';
 import chalkboard from './chalkboard.png'
 import { StyledButton } from "./components/MessageForm"
 
-const INFINITE_CHALKBOARD_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+import { INFINITE_CHALKBOARD_ADDRESS, BLOCK_EXPLORER_URL } from "./config";
 
 const Container = styled.div`
   max-width: 900px;
@@ -68,6 +68,7 @@ function App() {
   const [processingTransaction, setProcessingTransaction] = useState(false);
   const [metamaskInstalled, setMetamaskInstalled] = useState(false);
   const [wrongChain, setWrongChain] = useState(false);
+  const [txHash, setTxHash] = useState();
 
   // Function to request metamask connection. This sets signer.
   const connectMetamask = async () => {
@@ -86,6 +87,7 @@ function App() {
   const writeMessage = async (message) => {
     if (signer) {
       let txResponse = await contract.connect(signer).write(message, {value: ethers.utils.parseEther(cost)});
+      setTxHash(txResponse.hash);
       setProcessingTransaction(true);
       let txReceipt = await txResponse.wait();
       if (txReceipt.status === 1) {
@@ -202,7 +204,8 @@ function App() {
         {/* Processing transaction box */}
         {processingTransaction &&
           <ProcessingTransaction>
-            Processing Transaction<Dots></Dots>
+            <div>Processing Transaction<Dots></Dots></div>
+            <div><a href={BLOCK_EXPLORER_URL + txHash} target="_blank">{txHash.slice(0, 6) + "..." + txHash.slice(62)} ↗️</a></div>
           </ProcessingTransaction>
         }
       </Container>
