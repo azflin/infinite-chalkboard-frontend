@@ -9,7 +9,7 @@ import MessageForm from './components/MessageForm';
 import chalkboard from './chalkboard.png'
 import { StyledButton } from "./components/MessageForm"
 
-import { INFINITE_CHALKBOARD_ADDRESS, NETWORK } from "./config";
+import { INFINITE_CHALKBOARD_ADDRESS, NETWORK, CURRENCY } from "./config";
 
 const Container = styled.div`
   max-width: 900px;
@@ -195,7 +195,7 @@ function App() {
           <ul>
             <span><h1 style={{margin: "0"}}>The Infinite Chalkboard</h1></span>
             <li>There can only be one message on the chalkboard.</li>
-            <li>It costs <b>0.1 * 1.1 ^ (# of prior messages) ETH</b> to write a message, overwriting the existing one.</li>
+            <li>It costs <b>0.1 * 1.1 ^ (# of prior messages) {CURRENCY}</b> to write a message, overwriting the existing one.</li>
             <li>After a new message, the prior author receives 109% of what they originally paid. The remaining 1% remains in this contract.</li>
           </ul>
           <div style={{position: "absolute", top: "20px", right: "50px"}}>
@@ -222,7 +222,7 @@ function App() {
           <div>
             <h3>Write message (max 200 bytes):</h3>
             <div>
-              <p style={{fontSize: "20px"}}>Cost: {parseFloat(cost).toFixed(6)} ETH</p>
+              <p style={{fontSize: "20px"}}>Cost: {parseFloat(cost).toFixed(6)} {CURRENCY}</p>
             </div>
           </div>
           <div style={{display: "flex", alignItems: "center"}}>
@@ -236,7 +236,7 @@ function App() {
             {pastMessages && pastMessages.map((message => 
               <div key={message.blockNumber} style={{marginBottom: "10px"}}>
                 <div>
-                  Block #: {message.blockNumber}, {message.author.slice(0, 6)}...{message.author.slice(38)} wrote (costing {(parseFloat(ethers.utils.formatEther(message.cost))/1.1).toFixed(6)}):
+                  Block #: {message.blockNumber}, {message.author.slice(0, 6)}...{message.author.slice(38)} wrote (costing {(parseFloat(ethers.utils.formatEther(message.cost))/1.1).toFixed(6)} {CURRENCY}):
                 </div>
                 <div>&nbsp;&nbsp;{message.message}</div>
               </div>

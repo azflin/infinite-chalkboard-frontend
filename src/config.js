@@ -10,4 +10,6 @@ export const NETWORK = {
   chainId: 31337,
   block_explorer_url: "https://rinkeby.etherscan.io/",
   name: "localhost"
-}
+};
+
+export const CURRENCY = "ETH";
