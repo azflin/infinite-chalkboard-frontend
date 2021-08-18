@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { abi } from "./abis/InfiniteChalkboard.json";
 import MessageForm from './components/MessageForm';
 import chalkboard from './chalkboard.png'
+import { StyledButton } from "./components/MessageForm"
 
 const INFINITE_CHALKBOARD_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
@@ -159,7 +160,7 @@ function App() {
       <Container>
         {/* The header and rules */}
         <div align="right">
-          {address ? address : <button onClick={connectMetamask}>Connect</button>}
+          {address ? address : <StyledButton onClick={connectMetamask}>Connect</StyledButton>}
         </div>
         <BorderedDiv>
           <ul>
@@ -172,7 +173,7 @@ function App() {
         {/* The chalkboard */}
         <div style={{display: "flex", justifyContent: "center"}}>
           <div style={{position: "relative"}}>
-            <img src={chalkboard} width="800px" height="auto"></img>
+            <img src={chalkboard} width="800px" height="auto" alt="chalkboard"></img>
             <div style={{position: "absolute", height: "50%", width: "75%", overflow: "auto", margin: "auto", top: 0, left: 0, bottom: 0, right: 0, fontSize: "26px"}}>
               {message}
             </div>

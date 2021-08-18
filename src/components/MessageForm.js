@@ -2,9 +2,9 @@ import React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components'
 
-const Submit = styled.button`
+export const StyledButton = styled.button`
   display: inline-block;
-  background: #000;
+  background: rgb(38, 122, 59);
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -15,7 +15,7 @@ const Submit = styled.button`
   font-size: 15px;
   font-family: inherit;
   &:hover {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(38, 122, 59, 0.5);
   }
 `
 
@@ -44,7 +44,7 @@ export default function MessageForm({ writeMessage }) {
           onChange={e => setMessage(e.target.value)}
           style={{width: "350px", height: "80px"}}
         />
-        <Submit type='submit'>Submit</Submit>
+        <StyledButton type='submit'>Submit</StyledButton>
       </div>
     </form>
   )
