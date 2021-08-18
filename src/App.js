@@ -102,6 +102,7 @@ function App() {
       if (await detectEthereumProvider()) {
         setMetamaskInstalled(true);
         let p = new ethers.providers.Web3Provider(window.ethereum, "any");
+        // Listen for chain changes
         p.on("network", (newNetwork, oldNetwork) => {
           // When a Provider makes its initial connection, it emits a "network"
           // event with a null oldNetwork along with the newNetwork. So, if the
@@ -121,6 +122,11 @@ function App() {
           setSigner(p.getSigner());
         }
         setProvider(p);
+        // Listen for account changes
+        window.ethereum.on("accountsChanged", (accounts) => {
+          console.log("Accounts changed", accounts[0]);
+          setAddress(accounts[0]);
+        });
       }
     }
     getProvider();
