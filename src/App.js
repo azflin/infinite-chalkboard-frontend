@@ -84,17 +84,22 @@ function App() {
 
   // Function to write message to blockchain
   const writeMessage = async (message) => {
-    let txResponse = await contract.write(message, {value: ethers.utils.parseEther(cost)});
-    setProcessingTransaction(true);
-    let txReceipt = await txResponse.wait();
-    if (txReceipt.status === 1) {
-      setMessage(txReceipt.events[0].args[0]);
-      setAuthor(txReceipt.events[0].args[1]);
-      setCost(ethers.utils.formatEther(txReceipt.events[0].args[2]));
+    if (signer) {
+      let txResponse = await contract.connect(signer).write(message, {value: ethers.utils.parseEther(cost)});
+      setProcessingTransaction(true);
+      let txReceipt = await txResponse.wait();
+      if (txReceipt.status === 1) {
+        setMessage(txReceipt.events[0].args[0]);
+        setAuthor(txReceipt.events[0].args[1]);
+        setCost(ethers.utils.formatEther(txReceipt.events[0].args[2]));
+      } else {
+        console.log("Transaction reverted.");
+      }
+      setProcessingTransaction(false);
     } else {
-      console.log("Transaction reverted.");
+      alert("Connect through MetaMask first.");
     }
-    setProcessingTransaction(false);
+    
   }
 
   // On initial load, set the provider. If already connected, set address and signer as well.
