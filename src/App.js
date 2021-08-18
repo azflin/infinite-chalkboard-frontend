@@ -9,7 +9,7 @@ import MessageForm from './components/MessageForm';
 import chalkboard from './chalkboard.png'
 import { StyledButton } from "./components/MessageForm"
 
-import { INFINITE_CHALKBOARD_ADDRESS, BLOCK_EXPLORER_URL } from "./config";
+import { INFINITE_CHALKBOARD_ADDRESS, NETWORK } from "./config";
 
 const Container = styled.div`
   max-width: 900px;
@@ -120,7 +120,7 @@ function App() {
           }
         });
         let chainId = (await p.getNetwork()).chainId;
-        if (chainId !== 31337) {
+        if (chainId !== NETWORK.chainId) {
           setWrongChain(true);
           return;
         }
@@ -158,7 +158,7 @@ function App() {
     return (
       <div>
         <h1 style={{textAlign: "center"}}>The Infinite Chalkboard</h1>
-        <h3 style={{textAlign: "center"}}>Wrong Chain! Please switch to localhost.</h3>
+        <h3 style={{textAlign: "center"}}>Wrong Chain! Please switch to {NETWORK.name}.</h3>
       </div>
     )
   }
@@ -205,7 +205,7 @@ function App() {
         {processingTransaction &&
           <ProcessingTransaction>
             <div>Processing Transaction<Dots></Dots></div>
-            <div><a href={BLOCK_EXPLORER_URL + txHash} target="_blank">{txHash.slice(0, 6) + "..." + txHash.slice(62)} ↗️</a></div>
+            <div><a href={NETWORK.block_explorer_url + txHash} target="_blank">{txHash.slice(0, 6) + "..." + txHash.slice(62)} ↗️</a></div>
           </ProcessingTransaction>
         }
       </Container>

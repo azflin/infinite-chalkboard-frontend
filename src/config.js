@@ -1,2 +1,6 @@
-export const INFINITE_CHALKBOARD_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-export const BLOCK_EXPLORER_URL = "https://etherscan.io/tx/";
+export const INFINITE_CHALKBOARD_ADDRESS = "0x3a3838cE89B39B05FDFb9D307778C6EA7340e42C";
+export const NETWORK = {
+  chainId: 4,
+  block_explorer_url: "https://rinkeby.etherscan.io/tx/",
+  name: "rinkeby"
+}
