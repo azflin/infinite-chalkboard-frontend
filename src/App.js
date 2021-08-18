@@ -51,6 +51,13 @@ const Dots = styled.span`
     }
   }
 `
+const PastMessages = styled.div`
+  background: rgb(38, 122, 59);
+  padding: 0 0 20px 20px;
+  border: 2px solid white;
+  border-radius: 20px;
+  margin-bottom: 20px;
+`
 
 function App() {
 
@@ -150,14 +157,27 @@ function App() {
       setMessage(await c.message());
       setCost(ethers.utils.formatEther(await c.cost()));
       setAuthor(await c.author());
-      let writes = await c.queryFilter('Write');
-      setPastMessages(writes.map(x=>({blockNumber: x.blockNumber, message: x.args[0], author: x.args[1], cost: x.args[2]})));
+      // let writes = await c.queryFilter('Write');
+      // setPastMessages(writes.map(x=>({blockNumber: x.blockNumber, message: x.args[0], author: x.args[1], cost: x.args[2]})));
     }
     if (provider) {
       instantiateContract();
     }
   }, [provider]);
 
+  // Retrieve past messages. Depends on provider (first load of provider) & message (when user writes new message)
+  useEffect(() => {
+    async function getPastMessages() {
+      let c = new ethers.Contract(INFINITE_CHALKBOARD_ADDRESS, abi, provider)
+      let writes = await c.queryFilter('Write');
+      setPastMessages(writes.map(x=>({blockNumber: x.blockNumber, message: x.args[0], author: x.args[1], cost: x.args[2]})));
+    }
+    if (provider) {
+      getPastMessages();
+    }
+  }, [provider, message]);
+
+  // Return the JSX
   if (wrongChain) {
     return (
       <div>
@@ -212,14 +232,16 @@ function App() {
           </div>
         </BorderedDiv>
         {/* Past Messages */}
-        <div>
+        <PastMessages>
           <h1>Past Messages</h1>
-          <div style={{display: "flex", flexDirection: "column-reverse"}}>
+          <div style={{display: "flex", flexDirection: "column-reverse", maxHeight: "300px", overflow: "scroll"}}>
             {pastMessages && pastMessages.map((message => 
-              <div key={message.blockNumber}>{message.blockNumber} {message.author} {message.message} {ethers.utils.formatEther(message.cost)}</div>
+              <div key={message.blockNumber}>
+                {message.blockNumber} {message.author} {message.message} {(parseFloat(ethers.utils.formatEther(message.cost))/1.1).toFixed(6)}
+              </div>
             ))}
           </div>
-        </div>
+        </PastMessages>
         {/* Processing transaction box */}
         {processingTransaction &&
           <ProcessingTransaction>
