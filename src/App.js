@@ -69,7 +69,7 @@ function App() {
   const [metamaskInstalled, setMetamaskInstalled] = useState(false);
   const [wrongChain, setWrongChain] = useState(false);
 
-  // Function to request metamask connection
+  // Function to request metamask connection. This sets signer.
   const connectMetamask = async () => {
     if (provider) {
       try {
@@ -133,19 +133,19 @@ function App() {
     getProvider();
   }, []);
 
-  // Once we have a signer, instantiate the contract with signer. Set contract state variables.
+  // Once we have a provider, instantiate the contract with provider. Set contract state variables.
   useEffect(() => {
     async function instantiateContract() {
-      let c = new ethers.Contract(INFINITE_CHALKBOARD_ADDRESS, abi, signer)
+      let c = new ethers.Contract(INFINITE_CHALKBOARD_ADDRESS, abi, provider)
       setContract(c);
       setMessage(await c.message());
       setCost(ethers.utils.formatEther(await c.cost()));
       setAuthor(await c.author());
     }
-    if (signer) {
+    if (provider) {
       instantiateContract();
     }
-  }, [signer]);
+  }, [provider]);
 
   if (wrongChain) {
     return (
@@ -160,7 +160,7 @@ function App() {
       <Container>
         {/* The header and rules */}
         <div align="right">
-          {address ? address : <StyledButton onClick={connectMetamask}>Connect</StyledButton>}
+          {address ? <StyledButton>{address.slice(0, 6) + "..." + address.slice(38)}</StyledButton> : <StyledButton onClick={connectMetamask}>Connect</StyledButton>}
         </div>
         <BorderedDiv>
           <ul>
