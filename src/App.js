@@ -169,13 +169,19 @@ function App() {
         <div align="right">
           {address ? <StyledButton>{address.slice(0, 6) + "..." + address.slice(38)}</StyledButton> : <StyledButton onClick={connectMetamask}>Connect</StyledButton>}
         </div>
-        <BorderedDiv>
+        <BorderedDiv style={{position: "relative"}}>
           <ul>
             <span><h1 style={{margin: "0"}}>The Infinite Chalkboard</h1></span>
             <li>There can only be one message on the chalkboard.</li>
             <li>It costs <b>0.1 * 1.1 ^ (# of prior messages) ETH</b> to write a message, overwriting the existing one.</li>
             <li>After a new message, the prior author receives 109% of what they originally paid. The remaining 1% remains in this contract.</li>
           </ul>
+          <div style={{position: "absolute", top: "20px", right: "50px"}}>
+            <div>Contract: <a href={NETWORK.block_explorer_url + "address/" + INFINITE_CHALKBOARD_ADDRESS} target="_blank">
+              { INFINITE_CHALKBOARD_ADDRESS.slice(0, 6) + "..." + INFINITE_CHALKBOARD_ADDRESS.slice(38) }
+            </a></div>
+            <div>Made by: <a href="https://twitter.com/AzFlin" target="_blank">@AzFlin</a></div>
+          </div>
         </BorderedDiv>
         {/* The chalkboard */}
         <div style={{display: "flex", justifyContent: "center"}}>
@@ -205,7 +211,7 @@ function App() {
         {processingTransaction &&
           <ProcessingTransaction>
             <div>Processing Transaction<Dots></Dots></div>
-            <div><a href={NETWORK.block_explorer_url + txHash} target="_blank">{txHash.slice(0, 6) + "..." + txHash.slice(62)} ↗️</a></div>
+            <div><a href={NETWORK.block_explorer_url + "tx/" + txHash} target="_blank">{txHash.slice(0, 6) + "..." + txHash.slice(62)} ↗️</a></div>
           </ProcessingTransaction>
         }
       </Container>
