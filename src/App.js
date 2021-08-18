@@ -64,7 +64,9 @@ function App() {
   const [message, setMessage] = useState();
   const [author, setAuthor] = useState();
   const [cost, setCost] = useState();
+  const [pastMessages, setPastMessages] = useState();
 
+  // Various loading, status etc variables
   const [processingTransaction, setProcessingTransaction] = useState(false);
   const [metamaskInstalled, setMetamaskInstalled] = useState(false);
   const [wrongChain, setWrongChain] = useState(false);
@@ -140,7 +142,7 @@ function App() {
     getProvider();
   }, []);
 
-  // Once we have a provider, instantiate the contract with provider. Set contract state variables.
+  // Once we have a provider, instantiate the contract with provider. Set contract state variables and events.
   useEffect(() => {
     async function instantiateContract() {
       let c = new ethers.Contract(INFINITE_CHALKBOARD_ADDRESS, abi, provider)
@@ -148,6 +150,8 @@ function App() {
       setMessage(await c.message());
       setCost(ethers.utils.formatEther(await c.cost()));
       setAuthor(await c.author());
+      let writes = await c.queryFilter('Write');
+      setPastMessages(writes.map(x=>({blockNumber: x.blockNumber, message: x.args[0], author: x.args[1], cost: x.args[2]})));
     }
     if (provider) {
       instantiateContract();
@@ -167,7 +171,7 @@ function App() {
       <Container>
         {/* The header and rules */}
         <div align="right">
-          {address ? <StyledButton>{address.slice(0, 6) + "..." + address.slice(38)}</StyledButton> : <StyledButton onClick={connectMetamask}>Connect</StyledButton>}
+          {address ? <StyledButton>{NETWORK.name + ": " + address.slice(0, 6) + "..." + address.slice(38)}</StyledButton> : <StyledButton onClick={connectMetamask}>Connect</StyledButton>}
         </div>
         <BorderedDiv style={{position: "relative"}}>
           <ul>
@@ -207,6 +211,15 @@ function App() {
             <MessageForm writeMessage={writeMessage}></MessageForm>
           </div>
         </BorderedDiv>
+        {/* Past Messages */}
+        <div>
+          <h1>Past Messages</h1>
+          <div style={{display: "flex", flexDirection: "column-reverse"}}>
+            {pastMessages && pastMessages.map((message => 
+              <div key={message.blockNumber}>{message.blockNumber} {message.author} {message.message} {ethers.utils.formatEther(message.cost)}</div>
+            ))}
+          </div>
+        </div>
         {/* Processing transaction box */}
         {processingTransaction &&
           <ProcessingTransaction>
