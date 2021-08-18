@@ -52,7 +52,7 @@ const Dots = styled.span`
   }
 `
 const PastMessages = styled.div`
-  background: rgb(38, 122, 59);
+  background: rgba(38, 122, 59, 0.8);
   padding: 0 0 20px 20px;
   border: 2px solid white;
   border-radius: 20px;
@@ -157,8 +157,6 @@ function App() {
       setMessage(await c.message());
       setCost(ethers.utils.formatEther(await c.cost()));
       setAuthor(await c.author());
-      // let writes = await c.queryFilter('Write');
-      // setPastMessages(writes.map(x=>({blockNumber: x.blockNumber, message: x.args[0], author: x.args[1], cost: x.args[2]})));
     }
     if (provider) {
       instantiateContract();
@@ -236,8 +234,11 @@ function App() {
           <h1>Past Messages</h1>
           <div style={{display: "flex", flexDirection: "column-reverse", maxHeight: "300px", overflow: "scroll"}}>
             {pastMessages && pastMessages.map((message => 
-              <div key={message.blockNumber}>
-                {message.blockNumber} {message.author} {message.message} {(parseFloat(ethers.utils.formatEther(message.cost))/1.1).toFixed(6)}
+              <div key={message.blockNumber} style={{marginBottom: "10px"}}>
+                <div>
+                  Block #: {message.blockNumber}, {message.author.slice(0, 6)}...{message.author.slice(38)} wrote (costing {(parseFloat(ethers.utils.formatEther(message.cost))/1.1).toFixed(6)}):
+                </div>
+                <div>&nbsp;&nbsp;{message.message}</div>
               </div>
             ))}
           </div>
