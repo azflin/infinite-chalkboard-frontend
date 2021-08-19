@@ -84,6 +84,25 @@ function App() {
     }
   }
 
+  // Function to add Fantom network to MetaMask
+  const addFantomToMetamask = async () => {
+    let params = {
+      chainId: '0xFA',
+      chainName: 'Fantom Opera',
+      nativeCurrency: {
+          name: 'Fantom',
+          symbol: 'FTM',
+          decimals: 18
+      },
+      rpcUrls: ['https://rpc.ftm.tools/'],
+      blockExplorerUrls: ['https://ftmscan.com/']
+    }
+    await window.ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [params]
+    });
+  }
+
   // Function to write message to blockchain
   const writeMessage = async (message) => {
     if (signer) {
@@ -186,6 +205,8 @@ function App() {
       <div>
         <h1 style={{textAlign: "center"}}>The Infinite Chalkboard</h1>
         <h3 style={{textAlign: "center"}}>Wrong Chain! Please switch to {NETWORK.name}.</h3>
+        <h3 style={{textAlign: "center"}}>If you don't have Fantom chain added to your metamask:</h3>
+        <button style={{margin: "auto", display: "block"}} onClick={addFantomToMetamask}>Add Fantom to MetaMask</button>
       </div>
     )
   }
