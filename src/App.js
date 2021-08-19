@@ -110,7 +110,7 @@ function App() {
       try {
         txResponse = await contract.connect(signer).write(message, {value: ethers.utils.parseEther(cost)});
       } catch {
-        setErrorTransaction("RPC Error! Most likely someone wrote on the board since you loaded the page. Please refresh.");
+        setErrorTransaction("RPC Error! Either someone just wrote on the board (then refresh page) or you rejected MetaMask.");
         return;
       }
       setTxHash(txResponse.hash);
