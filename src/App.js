@@ -6,8 +6,9 @@ import styled from 'styled-components'
 
 import { abi } from "./abis/InfiniteChalkboard.json";
 import MessageForm from './components/MessageForm';
-import chalkboard from './chalkboard.png'
-import { StyledButton } from "./components/MessageForm"
+import chalkboard from './chalkboard.png';
+import { StyledButton } from "./components/MessageForm";
+import { Status } from "./components/Status";
 
 import { INFINITE_CHALKBOARD_ADDRESS, NETWORK } from "./config";
 
@@ -20,16 +21,6 @@ const BorderedDiv = styled.div`
   border-radius: 20px;
   background-color: rgba(99, 95, 84, 0.7);
   margin-bottom: 15px;
-`
-const ProcessingTransaction = styled.div`
-  position: fixed;
-  bottom: 50px;
-  right: 20px;
-  border: 2px solid white;
-  border-radius: 10px;
-  font-size: 24px;
-  padding: 10px;
-  background-color: rgba(38, 122, 59, 0.8)
 `
 const Dots = styled.span`
   &::after {
@@ -75,6 +66,7 @@ function App() {
 
   // Various loading, status etc variables
   const [processingTransaction, setProcessingTransaction] = useState(false);
+  const [errorTransaction, setErrorTransaction] = useState("");
   const [metamaskInstalled, setMetamaskInstalled] = useState(false);
   const [wrongChain, setWrongChain] = useState(false);
   const [txHash, setTxHash] = useState();
@@ -100,6 +92,7 @@ function App() {
         txResponse = await contract.connect(signer).write(message, {value: ethers.utils.parseEther(cost)});
       } catch {
         console.log("RPC Error");
+        setErrorTransaction("RPC Error! Most likely someone wrote on the board since you loaded the page. Please refresh.");
         return;
       }
       setTxHash(txResponse.hash);
@@ -195,7 +188,9 @@ function App() {
       <Container>
         {/* The header and rules */}
         <div align="right">
-          {address ? <StyledButton>{NETWORK.name + ": " + address.slice(0, 6) + "..." + address.slice(38)}</StyledButton> : <StyledButton onClick={connectMetamask}>Connect</StyledButton>}
+          {address
+            ? <StyledButton>{NETWORK.name + ": " + address.slice(0, 6) + "..." + address.slice(38)}</StyledButton>
+            : <StyledButton onClick={connectMetamask}>Connect</StyledButton>}
         </div>
         <BorderedDiv style={{position: "relative"}}>
           <ul>
@@ -252,10 +247,11 @@ function App() {
         </PastMessages>
         {/* Processing transaction box */}
         {processingTransaction &&
-          <ProcessingTransaction>
-            <div>Processing Transaction<Dots></Dots></div>
-            <div><a href={NETWORK.block_explorer_url + "tx/" + txHash} target="_blank">{txHash.slice(0, 6) + "..." + txHash.slice(62)} ↗️</a></div>
-          </ProcessingTransaction>
+          <Status type="processing" url={NETWORK.block_explorer_url + "tx/" + txHash} txHash={txHash} messageJSX={<div>Processing Transaction<Dots></Dots></div>}></Status>
+        }
+        {/* RPC Error transaction box */}
+        {errorTransaction &&
+          <Status messageJSX={<div>{errorTransaction}</div>} closeable={true} setErrorTransaction={setErrorTransaction}></Status>
         }
       </Container>
     );

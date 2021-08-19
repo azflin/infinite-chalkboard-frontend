@@ -21,5 +21,6 @@ export const INFINITE_CHALKBOARD_ADDRESS = "0x5fbdb2315678afecb367f032d93f642f64
 export const NETWORK = {
   chainId: 31337,
   block_explorer_url: "https://rinkeby.etherscan.io/",
-  name: "localhost"
+  name: "localhost",
+  currency: "ETH"
 };
