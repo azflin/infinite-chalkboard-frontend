@@ -95,7 +95,13 @@ function App() {
   // Function to write message to blockchain
   const writeMessage = async (message) => {
     if (signer) {
-      let txResponse = await contract.connect(signer).write(message, {value: ethers.utils.parseEther(cost)});
+      let txResponse;
+      try {
+        txResponse = await contract.connect(signer).write(message, {value: ethers.utils.parseEther(cost)});
+      } catch {
+        console.log("RPC Error");
+        return;
+      }
       setTxHash(txResponse.hash);
       setProcessingTransaction(true);
       let txReceipt = await txResponse.wait();
@@ -196,7 +202,8 @@ function App() {
             <span><h1 style={{margin: "0"}}>The Infinite Chalkboard</h1></span>
             <li>There can only be one message on the chalkboard.</li>
             <li>It costs <b>0.1 * 1.1 ^ (# of prior messages) {NETWORK.currency}</b> to write a message, overwriting the existing one.</li>
-            <li>After a new message, the prior author receives 109% of what they originally paid. The remaining 1% remains in this contract.</li>
+            <li>After a new message, the prior author receives 109% of what they originally paid. The remaining 1% remains in this contract.
+              <i>This means if someone writes after you, you'll get your money back (+ 9% more!)</i></li>
           </ul>
           <div style={{position: "absolute", top: "20px", right: "50px"}}>
             <div>Contract: <a href={NETWORK.block_explorer_url + "address/" + INFINITE_CHALKBOARD_ADDRESS} target="_blank">
