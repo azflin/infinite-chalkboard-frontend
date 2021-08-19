@@ -91,19 +91,25 @@ function App() {
       try {
         txResponse = await contract.connect(signer).write(message, {value: ethers.utils.parseEther(cost)});
       } catch {
-        console.log("RPC Error");
         setErrorTransaction("RPC Error! Most likely someone wrote on the board since you loaded the page. Please refresh.");
         return;
       }
       setTxHash(txResponse.hash);
       setProcessingTransaction(true);
-      let txReceipt = await txResponse.wait();
+      let txReceipt;
+      try {
+        txReceipt = await txResponse.wait();
+      } catch {
+        setErrorTransaction("Transaction reverted! Someone probably wrote just before you.");
+        setProcessingTransaction(false);
+        return;
+      }
       if (txReceipt.status === 1) {
         setMessage(txReceipt.events[0].args[0]);
         setAuthor(txReceipt.events[0].args[1]);
         setCost(ethers.utils.formatEther(txReceipt.events[0].args[2]));
       } else {
-        console.log("Transaction reverted.");
+        console.log("Transaction receipt somehow has non 1 status.");
       }
       setProcessingTransaction(false);
     } else {
